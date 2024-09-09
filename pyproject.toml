@@ -1,0 +1,28 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "sugar-cli"
+authors = [{ name = "Huang, Hong-Chang", email = "seer852741@gmail.com" }]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.12"
+dynamic = ["version", "description"]
+dependencies = ["docstring_parser"]
+license = { file = "LICENSE" }
+
+[project.urls]
+Homepage = "https://github.com/Stanley5249/sugar"
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "uv"]
+
+[tool.flit.module]
+name = "sugar"

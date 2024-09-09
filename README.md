@@ -1,12 +1,21 @@
 # 🍬Sugar
 
+**Disclaimer**: This project is not yet production ready.
+
 A Python CLI library inspired by the excellent projects [typer](https://github.com/fastapi/typer) and [fire](https://github.com/google/python-fire).
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Dependencies](#dependencies)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [License](#license)
+- [Authors](#authors)
 
 ## Overview
 
 Sugar leverages Python's powerful typing system and syntactic sugar to quickly create CLI programs, offering a delightful and user-friendly experience.
-
-**Disclaimer: This project is not yet production ready.**
 
 ## Installation
 
@@ -44,7 +53,7 @@ This approach is similar to `fire`.
 
 For an app without subcommands:
 
-[examples\usage_without_cmds.py](examples\usage_without_cmds.py)
+[examples/usage_without_cmds.py](examples/usage_without_cmds.py)
 
 ```python
 if __name__ == "__main__":
@@ -53,7 +62,7 @@ if __name__ == "__main__":
 
 For an app with subcommands:
 
-[examples\usage_with_cmds.py](examples\usage_with_cmds.py)
+[examples/usage_with_cmds.py](examples/usage_with_cmds.py)
 
 ```python
 if __name__ == "__main__":
@@ -66,7 +75,7 @@ This approach is similar to `typer`.
 
 For an app without subcommands:
 
-[examples\usage_argument_app.py](examples\usage_argument_app.py)
+[examples/usage_argument_app.py](examples/usage_argument_app.py)
 
 ```python
 app = ArgumentApp()
@@ -80,7 +89,7 @@ if __name__ == "__main__":
 
 For an app with subcommands:
 
-[examples\usage_command_app.py](examples\usage_command_app.py)
+[examples/usage_command_app.py](examples/usage_command_app.py)
 
 ```python
 app = CommandApp()
@@ -133,7 +142,7 @@ Magic:
 
 ### Shell
 
-[examples\usage_shell.py](examples\usage_shell.py)
+[examples/usage_shell.py](examples/usage_shell.py)
 
 To turn a CLI program into a shell-like program, replace `run` with `cycle`.
 
@@ -180,7 +189,7 @@ It'll print the help message and wait for your instructions.
 
 While it would be ideal to eliminate the dependency on `docstring-parser`, the complexity of handling various styles of docstrings makes it impractical to implement all of them ourselves. We are currently looking for better solutions.
 
-## Testing
+<!-- ## Testing
 
 To run the tests, use [`pytest`](https://github.com/pytest-dev/pytest):
 
@@ -188,7 +197,7 @@ To run the tests, use [`pytest`](https://github.com/pytest-dev/pytest):
 pytest tests
 ```
 
-Make sure to install all required dependencies before running the tests.
+Make sure to install all required dependencies before running the tests. -->
 
 ## FAQ
 

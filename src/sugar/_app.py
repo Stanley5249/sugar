@@ -26,6 +26,15 @@ def sugar(
     obj: Callable[..., Any] | Sequence[Callable[..., Any]],
     argv: str | Sequence[str] | None = None,
 ) -> Any:
+    """Run a callable or a sequence of callables as a command-line application.
+
+    Args:
+        obj: A callable or a sequence of callables.
+        argv: A string or a sequence of strings to parse as command-line arguments.
+
+    Returns:
+        The return value of the callable.
+    """
     if isinstance(obj, Sequence):
         app = CommandApp()
         for command in obj:

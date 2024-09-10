@@ -1,0 +1,34 @@
+site_name: Sugar
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+
+            inherited_members: false
+            # members_order: source
+            filters: ["!^_"]
+            
+            docstring_section_style: table
+            docstring_style: google
+            merge_init_into_class: true
+            show_if_no_docstring: true
+
+            separate_signature: true
+            # show_signature_annotations: true
+            signature_crossrefs: true
+            unwrap_annotated: true
+
+
+nav:
+  - Home: index.md
+  - Reference:
+      - Public APIs (sugar): reference/sugar.md

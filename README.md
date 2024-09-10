@@ -31,7 +31,7 @@ uv pip install sugar-cli
 
 ## Basic Usage
 
-This section is for those who are not familar with other CLI libraries.
+This section is for those who are not familiar with other CLI libraries.
 
 Below a common header shared by the following examples.
 
@@ -187,17 +187,13 @@ It'll print the help message and wait for your instructions.
 - [`ruff`](https://github.com/astral-sh/ruff): For linting and formatting.
 - [`uv`](https://github.com/astral-sh/uv): For dependency management.
 
+### Documents
+
+- [`mkdocs`](https://github.com/mkdocs/mkdocs)
+- [`mkdocstrings[python]`](https://github.com/mkdocstrings/python)
+- [`mkdocs-material`](https://github.com/squidfunk/mkdocs-material)
+
 While it would be ideal to eliminate the dependency on `docstring-parser`, the complexity of handling various styles of docstrings makes it impractical to implement all of them ourselves. We are currently looking for better solutions.
-
-<!-- ## Testing
-
-To run the tests, use [`pytest`](https://github.com/pytest-dev/pytest):
-
-```sh
-pytest tests
-```
-
-Make sure to install all required dependencies before running the tests. -->
 
 ## FAQ
 

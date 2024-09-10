@@ -22,7 +22,14 @@ license = { file = "LICENSE" }
 Homepage = "https://github.com/Stanley5249/sugar"
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff", "uv"]
+dev = [
+    "pytest",
+    "ruff",
+    "uv",
+    "mkdocs",
+    "mkdocstrings[python]",
+    "mkdocs-material",
+]
 
 [tool.flit.module]
 name = "sugar"

@@ -786,12 +786,12 @@ class CommandParser[T](BaseParser[T]):
         self._parsers[dest] = parser
 
     @overload
-    def get_parser(
+    def get_subparser(
         self, name: str, ignore_error: Literal[False] = False
     ) -> Parser[T]: ...
     @overload
-    def get_parser(self, name: str, ignore_error: bool = False) -> Parser[T] | None: ...
-    def get_parser(self, name: str, ignore_error: bool = False) -> Parser[T] | None:
+    def get_subparser(self, name: str, ignore_error: bool = False) -> Parser[T] | None: ...
+    def get_subparser(self, name: str, ignore_error: bool = False) -> Parser[T] | None:
         dest = self._name_to_parser.get(name, None)
         if dest is None:
             if ignore_error:
@@ -804,16 +804,6 @@ class CommandParser[T](BaseParser[T]):
 
         return self._parsers[dest]
 
-    def _get_parser(self, name: str) -> Parser[T]:
-        dest = self._name_to_parser.get(name, None)
-        if dest is None:
-            if name.isidentifier():
-                raise SugarError(
-                    did_you_mean(f"subparser {name!r} not found", name, self._parsers)
-                )
-            raise SugarError(f"{name!r} is not a valid subparser name")
-        return self._parsers[dest]
-
     def parse_vals(
         self,
         vals: list[str],
@@ -822,7 +812,12 @@ class CommandParser[T](BaseParser[T]):
         if vals:
             name = vals.pop(0)
             name = name.replace("-", "_")
-            parser = self._get_parser(name)
+
+            try:
+                parser = self.get_subparser(name)
+            except ValueError as exc:
+                raise SugarError(str(exc)) from None
+
             res = parser.parse_vals(vals, named_vals)
             return res
 

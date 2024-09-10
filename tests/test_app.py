@@ -47,7 +47,7 @@ def test_argument_app_add_command() -> None:
 def test_command_app_command_decoractor() -> None:
     app = CommandApp()
     app.command()(func)
-    subapp = app.get_app("func")
+    subapp = app.get_subapp("func")
     assert isinstance(subapp, ArgumentApp)
     assert subapp.get_command() is func
 
@@ -55,7 +55,7 @@ def test_command_app_command_decoractor() -> None:
 def test_command_app_add_command() -> None:
     app = CommandApp()
     app.add_command(func)
-    subapp = app.get_app("func")
+    subapp = app.get_subapp("func")
     assert isinstance(subapp, ArgumentApp)
     assert subapp.get_command() is func
 

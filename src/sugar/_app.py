@@ -277,12 +277,12 @@ class CommandApp[T](BaseApp[T]):
         self._apps.append(app)
 
     @overload
-    def get_app(self, name: str, ignore_error: Literal[False] = False) -> App[Any]: ...
+    def get_subapp(self, name: str, ignore_error: Literal[False] = False) -> App[Any]: ...
     @overload
-    def get_app(self, name: str, ignore_error: bool) -> App[Any] | None: ...
-    def get_app(self, name: str, ignore_error: bool = False) -> App[Any] | None:
-        parser = self.parser.get_parser(name, ignore_error)
-        return parser.state()  # type: ignore
+    def get_subapp(self, name: str, ignore_error: bool) -> App[Any] | None: ...
+    def get_subapp(self, name: str, ignore_error: bool = False) -> App[Any] | None:
+        subparser = self.parser.get_subparser(name, ignore_error)
+        return subparser.state()  # type: ignore
 
     def parse_args(
         self,

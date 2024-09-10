@@ -14,7 +14,8 @@ app = CommandApp()
 @app.command()
 def show(
     pretty: Annotated[
-        bool, Meta(("p", "pretty"), Store(True, "@bool"), "if True, use pretty print")
+        bool,
+        Meta(("p", "pretty"), Store(True), "if True, use pretty print"),
     ] = False,
 ) -> None:
     """Show the application."""

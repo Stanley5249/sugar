@@ -3,6 +3,7 @@ from contextlib import AbstractContextManager
 from difflib import get_close_matches
 from functools import partial, partialmethod, wraps
 from itertools import filterfalse
+from reprlib import recursive_repr
 from traceback import print_exception
 from types import FrameType, TracebackType
 from typing import Any, ClassVar, Literal, Protocol, overload
@@ -88,6 +89,7 @@ class AutoRepr(Protocol):
     def _get_auto_repr_fields(self) -> list[tuple[str, Any]]:
         return [(field, getattr(self, field)) for field in self.__fields]
 
+    @recursive_repr()
     def __repr__(self) -> str:
         items = ", ".join(f"{k}={getattr(self, k)!r}" for k in self.__fields)
         return f"{self.__class__.__name__}({items})"

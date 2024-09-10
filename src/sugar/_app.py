@@ -277,7 +277,9 @@ class CommandApp[T](BaseApp[T]):
         self._apps.append(app)
 
     @overload
-    def get_subapp(self, name: str, ignore_error: Literal[False] = False) -> App[Any]: ...
+    def get_subapp(
+        self, name: str, ignore_error: Literal[False] = False
+    ) -> App[Any]: ...
     @overload
     def get_subapp(self, name: str, ignore_error: bool) -> App[Any] | None: ...
     def get_subapp(self, name: str, ignore_error: bool = False) -> App[Any] | None:

@@ -235,7 +235,7 @@ See [Chaos](https://clig.dev/#chaos) for the original lines.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request on GitHub. For more detailed guidelines, refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+Contributions are welcome! Please open an issue or submit a pull request on GitHub. For more detailed guidelines, refer to the [CONTRIBUTING.md](.github/CONTRIBUTING.md) file.
 
 ## License
 

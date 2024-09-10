@@ -47,45 +47,7 @@ COMMANDS = "Commands"
 DEFAULT_HELP_FLAGS = "help", "h"
 
 
-class Interface[T](Protocol):
-    # @abstractmethod
-    def __init__(
-        self,
-        *names: str,
-        brief: str | None = ...,
-        detail: str | None = None,
-        docstring: Docstring | None = None,
-        formatter: Formatter = ...,
-        state: T = None,
-        help_flags: tuple[str, ...] | None = ...,
-    ) -> None: ...
-
-    # ================================================================================
-    # main methods
-    # ================================================================================
-
-    @abstractmethod
-    def run(
-        self,
-        argv: str | Sequence[str] | None = None,
-    ) -> Any: ...
-
-    @abstractmethod
-    def stream(
-        self,
-        prompt: Any = None,
-        input: Callable[[Any], str] = input,
-    ) -> Iterator[Any]: ...
-
-    @abstractmethod
-    def cycle(
-        self,
-        prompt: Any = None,
-        input: Callable[[Any], str] = input,
-    ) -> None: ...
-
-
-class Parser[T](Interface[T], Protocol):
+class Parser[T](Protocol):
     """Protocol for parsers."""
 
     # ================================================================================

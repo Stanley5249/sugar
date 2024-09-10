@@ -1,7 +1,7 @@
 import dataclasses
 import sys
 from abc import abstractmethod
-from collections.abc import Callable, Iterator, Mapping, MutableMapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from inspect import Parameter, signature
 from typing import Any, Literal, Protocol, Self, assert_never, overload
 from weakref import ReferenceType, ref
@@ -15,11 +15,9 @@ from sugar._parser import (
     MISSING,
     ArgumentParser,
     CommandParser,
-    Interface,
     Parser,
 )
 from sugar._utils import AutoRepr, Shield, get_name, pop_traceback
-from sugar.exception import SugarError
 
 
 def sugar(
@@ -47,25 +45,29 @@ def sugar(
     return app.run(argv)
 
 
-class App[T](Interface[T], Protocol):
+class App[T](Protocol):
+    state: T
+
     @property
     def parser(self) -> Parser[ReferenceType[Self]]: ...
 
     @abstractmethod
     def parse_args(
         self,
-        parser: Parser[ReferenceType["App"]],
+        parser: Parser[ReferenceType["App[Any]"]],
         args: Sequence[str],
         kwargs: Mapping[str, Any],
-    ) -> tuple["App", Any]: ...
+    ) -> tuple["App[Any]", Any]: ...
 
     @abstractmethod
-    def run(self, argv: str | Sequence[str] | None = None) -> tuple["App", Any]: ...
+    def run(
+        self, argv: str | Sequence[str] | None = None
+    ) -> tuple["App[Any]", Any]: ...
 
     @abstractmethod
     def stream(
         self, prompt: Any = None, input: Callable[[Any], str] = input
-    ) -> Iterator[tuple["App", Any]]: ...
+    ) -> Iterator[tuple["App[Any]", Any]]: ...
 
     @abstractmethod
     def cycle(
@@ -73,8 +75,8 @@ class App[T](Interface[T], Protocol):
     ) -> None: ...
 
 
-class BaseApp[T](AutoRepr, App[T], fields=("parser",)):
-    def run(self, argv: str | Sequence[str] | None = None) -> tuple[App, Any]:
+class BaseApp[T](AutoRepr, App[T], fields=("parser", "state")):
+    def run(self, argv: str | Sequence[str] | None = None) -> tuple[App[Any], Any]:
         with pop_traceback:
             parser, args, kwargs = self.parser.run(argv)
             return self.parse_args(parser, args, kwargs)
@@ -83,7 +85,7 @@ class BaseApp[T](AutoRepr, App[T], fields=("parser",)):
         self,
         prompt: Any = None,
         input: Callable[[Any], str] = input,
-    ) -> Iterator[tuple[App, Any]]:
+    ) -> Iterator[tuple[App[Any], Any]]:
         with pop_traceback:
             shield = Shield(True, sys._getframe(1))
             for parser, args, kwargs in self.parser.stream(prompt, input):
@@ -99,6 +101,7 @@ class BaseApp[T](AutoRepr, App[T], fields=("parser",)):
 
 
 class ArgumentApp[T](BaseApp[T]):
+    _parser: ArgumentParser[ReferenceType[Self]]
     _command: Callable[..., Any] | None
 
     def __init__(
@@ -127,34 +130,35 @@ class ArgumentApp[T](BaseApp[T]):
     def parser(self) -> ArgumentParser[ReferenceType[Self]]:
         return self._parser
 
-    def command[T_: Callable](
+    def command[R: Callable](
         self,
         *names: str,
         brief: str | None = None,
         detail: str | None = None,
         docstring: Docstring | None = None,
-    ) -> Callable[[T_], T_]:
-        def decorator(command: T_) -> T_:
-            return self.add_command(
+    ) -> Callable[[R], R]:
+        def decorator(command: R) -> R:
+            self.add_command(
                 command,
                 *names,
                 brief=brief,
                 detail=detail,
                 docstring=docstring,
             )
+            return command
 
         return decorator
 
-    def add_command[T_: Callable](
+    def add_command(
         self,
-        command: T_,
+        command: Callable[..., Any],
         *names: str,
         brief: str | None = None,
         detail: str | None = None,
         docstring: Docstring | None = None,
-    ) -> T_:
-        if self.has_command():
-            raise SugarError("command already set")
+    ) -> None:
+        if self._command is not None:
+            raise ValueError("command already set")
 
         parser = self.parser
 
@@ -182,7 +186,6 @@ class ArgumentApp[T](BaseApp[T]):
         add_arguments_from_signature(parser, command)
 
         self._command = command
-        return command
 
     @overload
     def get_command(
@@ -194,20 +197,15 @@ class ArgumentApp[T](BaseApp[T]):
         command = self._command
         if ignore_error or command is not None:
             return command
-        raise SugarError("command not set")
-
-    def has_command(self) -> bool:
-        return self._command is not None
+        raise ValueError("command not set")
 
     def parse_args(
         self,
-        parser: Parser[ReferenceType[App]],
+        parser: Parser[ReferenceType[App[Any]]],
         args: Sequence[str],
         kwargs: Mapping[str, Any],
     ) -> tuple[Self, Any]:
-        assert isinstance(parser.state, ReferenceType), parser.state
-        assert isinstance((sugar := parser.state()), ArgumentApp), sugar
-        assert sugar is self, sugar
+        assert (app := parser.state()) is self, app
 
         with pop_traceback:
             command = self.get_command()
@@ -215,7 +213,8 @@ class ArgumentApp[T](BaseApp[T]):
 
 
 class CommandApp[T](BaseApp[T]):
-    _apps: MutableMapping[str, ArgumentApp]
+    _parser: CommandParser[ReferenceType[Self]]
+    _apps: list[App[Any]]  # keep reference to subapps
 
     def __init__(
         self,
@@ -237,68 +236,64 @@ class CommandApp[T](BaseApp[T]):
             help_flags=help_flags,
         )
         self.state = state
-        self._apps = {}
+        self._apps = []
 
     @property
     def parser(self) -> CommandParser[ReferenceType[Self]]:
         return self._parser
 
-    def command[T_: Callable](
+    def command[R: Callable](
         self,
         *names: str,
         brief: str | None = None,
         detail: str | None = None,
         docstring: Docstring | None = None,
-    ) -> Callable[[T_], T_]:
-        def decorator(command: T_) -> T_:
-            return self.add_command(
+    ) -> Callable[[R], R]:
+        def decorator(command: R) -> R:
+            self.add_command(
                 command,
                 *names,
                 brief=brief,
                 detail=detail,
                 docstring=docstring,
             )
+            return command
 
         return decorator
 
-    def add_command[T_: Callable](
+    def add_command(
         self,
-        command: T_,
+        command: Callable[..., Any],
         *names: str,
         brief: str | None = None,
         detail: str | None = None,
         docstring: Docstring | None = None,
-    ) -> T_:
+    ) -> None:
         app = ArgumentApp()
         app.add_command(
             command, *names, brief=brief, detail=detail, docstring=docstring
         )
-        parser = app.parser
-        self._parser.add_parser(parser)
-        self._apps[parser.prog] = app
-        return command
+        self.parser.add_parser(app.parser)
+        self._apps.append(app)
 
     @overload
     def get_app(self, name: str, ignore_error: Literal[False] = False) -> App[Any]: ...
     @overload
     def get_app(self, name: str, ignore_error: bool) -> App[Any] | None: ...
     def get_app(self, name: str, ignore_error: bool = False) -> App[Any] | None:
-        subparser = self._parser.get_parser(name, ignore_error)
-        return subparser.state()  # type: ignore
+        parser = self.parser.get_parser(name, ignore_error)
+        return parser.state()  # type: ignore
 
     def parse_args(
         self,
-        parser: Parser[ReferenceType[App]],
+        parser: Parser[ReferenceType[App[Any]]],
         args: Sequence[str],
         kwargs: Mapping[str, Any],
-    ) -> tuple[App, Any]:
+    ) -> tuple[App[Any], Any]:
         with pop_traceback:
-            assert isinstance(parser.state, ReferenceType), parser.state
-
             app = parser.state()
             if app is None:
-                raise SugarError("reference to app is dead")
-
+                raise ValueError("reference to app is dead")
             assert isinstance(app, ArgumentApp), app
             return app.parse_args(parser, args, kwargs)
 

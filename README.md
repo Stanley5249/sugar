@@ -1,8 +1,6 @@
 # 🍬Sugar
 
-**Disclaimer**: This project is not yet production ready.
-
-A Python CLI library inspired by the excellent projects [typer](https://github.com/fastapi/typer) and [fire](https://github.com/google/python-fire).
+***Disclaimer**: This project is not yet production-ready and is actively seeking contributors.*
 
 - [Overview](#overview)
 - [Installation](#installation)
@@ -15,7 +13,7 @@ A Python CLI library inspired by the excellent projects [typer](https://github.c
 
 ## Overview
 
-Sugar leverages Python's powerful typing system and syntactic sugar to quickly create CLI programs, offering a delightful and user-friendly experience.
+Sugar leverages Python’s powerful typing system and syntactic sugar to simplify the creation of CLI programs, offering a delightful and user-friendly experience. It draws inspiration from the excellent projects [Typer](https://github.com/fastapi/typer) and [Python Fire](https://github.com/google/python-fire).
 
 ## Installation
 

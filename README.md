@@ -180,7 +180,7 @@ We embarked on this project after being inspired by the [Command Line Interface 
 
 > The world of the terminal is a mess. Inconsistencies are everywhere, slowing us down and making us second-guess ourselves.
 
-Existing CLI libraries are riddled with ambiguities that frustrated us. For instance, the command `--FLAG 1 2` can be interpreted in multiple ways: either `1` is an option for `FLAG` and `2` is positional, or both `1` and `2` are options for `FLAG`. This behavior varies based on the parser's design and other factors. We believe it should always be the latter, with positional arguments preceding flags.
+Existing CLI libraries are riddled with ambiguities that frustrated us. For instance, the command `--FLAG 1 2` can be interpreted in multiple ways: either `1` is an option for `FLAG` and `2` is positional, or both `1` and `2` are options for `FLAG`. This behavior varies based on the parser's design and other factors. We believe that argument parsers should be stateless, meaning the parser's settings should not influence the role of any arguments. Arguments that appear before the first keyword (flag or option) are treated as positional arguments, while arguments that appear between flags are associated with the preceding flag.
 
 This issue is just one example of many that motivated us to develop a new library. While it may not yet be perfect, we are continually seeking better solutions to these problems. Our goal is to establish a standard that enhances productivity and user satisfaction, ultimately becoming the new norm for CLIs.
 

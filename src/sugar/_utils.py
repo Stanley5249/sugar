@@ -1,3 +1,4 @@
+import sys
 from collections.abc import Callable, Iterable, Iterator, MutableMapping
 from contextlib import AbstractContextManager
 from difflib import get_close_matches
@@ -127,6 +128,7 @@ class Shield(AbstractContextManager):
                     frame.f_lasti,
                     frame.f_lineno,
                 )
+            sys.last_exc = exc_val
             print_exception(None, exc_val, exc_tb)
         return suppress
 

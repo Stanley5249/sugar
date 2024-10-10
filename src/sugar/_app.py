@@ -20,31 +20,6 @@ from sugar._parser import (
 from sugar._utils import AutoRepr, Shield, get_name, pop_traceback
 
 
-def sugar(
-    obj: Callable[..., Any] | Sequence[Callable[..., Any]],
-    argv: str | Sequence[str] | None = None,
-) -> Any:
-    """Run a callable or a sequence of callables as a command-line application.
-
-    Args:
-        obj: A callable or a sequence of callables.
-        argv: A string or a sequence of strings to parse as command-line arguments.
-
-    Returns:
-        The return value of the callable.
-    """
-    if isinstance(obj, Sequence):
-        app = CommandApp()
-        for command in obj:
-            app.add_command(command)
-    elif callable(obj):
-        app = ArgumentApp()
-        app.add_command(obj)
-    else:
-        assert_never(obj)
-    return app.run(argv)
-
-
 class App[T](Protocol):
     state: T
 
@@ -298,6 +273,25 @@ class CommandApp[T](BaseApp[T]):
                 raise ValueError("reference to app is dead")
             assert isinstance(app, ArgumentApp), app
             return app.parse_args(parser, args, kwargs)
+
+
+@overload
+def sugar(obj: Callable[..., Any]) -> ArgumentApp[None]: ...
+@overload
+def sugar(obj: Sequence[Callable[..., Any]]) -> CommandApp[None]: ...
+def sugar(obj: Callable[..., Any] | Sequence[Callable[..., Any]]) -> Any:
+    if callable(obj):
+        app = ArgumentApp()
+        app.add_command(obj)
+        return app
+
+    if isinstance(obj, Sequence):
+        app = CommandApp()
+        for command in obj:
+            app.add_command(command)
+        return app
+
+    assert_never(obj)
 
 
 @dataclasses.dataclass(slots=True)

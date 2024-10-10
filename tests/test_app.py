@@ -73,12 +73,12 @@ def test_command_app_run() -> None:
 
 
 def test_run_callable() -> None:
-    sugar(func, argv)
+    sugar(func).run(argv)
 
 
 def test_run_sequence() -> None:
-    sugar([func], argv_with_cmd)
+    sugar([func]).run(argv_with_cmd)
 
 
 if __name__ == "__main__":
-    sugar(func, argv)
+    sugar(func).run(argv)

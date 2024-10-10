@@ -7,4 +7,4 @@ def add(a: int, b: int) -> None:
 
 
 if __name__ == "__main__":
-    sugar(add)
+    sugar(add).run()

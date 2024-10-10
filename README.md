@@ -29,9 +29,7 @@ uv pip install sugar-cli
 
 ## Basic Usage
 
-This section is for those who are not familiar with other CLI libraries.
-
-Below a common header shared by the following examples.
+This section is for users unfamiliar with other CLI libraries. Below is a shared code snippet for the following examples.
 
 ```python
 from sugar import *
@@ -45,49 +43,28 @@ def sub(a: int, b: int) -> None:
     print(f"{a} - {b} = {a - b}")
 ```
 
-### One-liner Approach
+### Build the App
 
-This approach is similar to `fire`.
+#### App without Subcommands
 
-For an app without subcommands:
-
-[examples/usage_without_cmds.py](examples/usage_without_cmds.py)
-
-```python
-if __name__ == "__main__":
-    sugar(add)
-```
-
-For an app with subcommands:
-
-[examples/usage_with_cmds.py](examples/usage_with_cmds.py)
-
-```python
-if __name__ == "__main__":
-    sugar([add, sub])
-```
-
-### Decorator-based Approach
-
-This approach is similar to `typer`.
-
-For an app without subcommands:
-
-[examples/usage_argument_app.py](examples/usage_argument_app.py)
+Use `ArgumentApp` ([example code](examples/usage_argument_app.py))
 
 ```python
 app = ArgumentApp()
 
 @app.command()
 def add(a: int, b: int) -> int: ...
-
-if __name__ == "__main__":
-    app.run()
 ```
 
-For an app with subcommands:
+or `sugar` ([example code](examples/usage_without_cmds.py)).
 
-[examples/usage_command_app.py](examples/usage_command_app.py)
+```python
+app = sugar(add)
+```
+
+#### App with Subcommands
+
+Use `CommandApp` ([example code](examples/usage_command_app.py))
 
 ```python
 app = CommandApp()
@@ -97,32 +74,26 @@ def add(a: int, b: int) -> int: ...
 
 @app.command()
 def sub(a: int, b: int) -> int: ...
+```
 
-if __name__ == "__main__":
+or `sugar` ([example code](examples/usage_with_cmds.py)).
+
+```python
+app = sugar([add, sub])
+```
+
+### Execute the App
+
+#### Run Mode
+
+Use `run()` to execute it as a typical CLI program.
+
+```python
+if __name__ == "__main__":  
     app.run()
 ```
 
-### Run
-
-For an app without subcommands:
-
-```
-> python <FILENAME>.py 1 2
-1 + 2 = 3
-> python <FILENAME>.py --help
-Usage: <FILENAME> [MAGIC] [POSITIONAL] [KEYWORD]
-
-Add two numbers.
-
-Positional or keyword:
-  -a      int       [required]
-  -b      int       [required]
-
-Magic:
-  --help, -h    show this help message and exit
-```
-
-For an app with subcommands:
+Example:
 
 ```
 > python <FILENAME>.py add 1 2
@@ -138,18 +109,16 @@ Magic:
   --help, -h    show this help message and exit
 ```
 
-### Shell
+#### Cycle Mode
 
-[examples/usage_shell.py](examples/usage_shell.py)
-
-To turn a CLI program into a shell-like program, replace `run` with `cycle`.
+Use `cycle()` to enable a shell-like interface.
 
 ```python
-if __name__ == "__main__":
+if __name__ == "__main__":  
     app.cycle()
 ```
 
-You don't have to pass arguments with the python command.
+Example:
 
 ```
 > python <FILENAME>.py  
@@ -162,15 +131,9 @@ Commands:
 Magic:
   --help, -h    show this help message and exit
 
->>>
-```
-
-It'll print the help message and wait for your instructions.
-
-```
 >>> add 1 2
 1 + 2 = 3
->>>
+>>> 
 ```
 
 ## Dependencies

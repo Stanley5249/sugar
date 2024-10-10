@@ -166,13 +166,13 @@ While it would be ideal to eliminate the dependency on `docstring-parser`, the c
 **A**rgument  
 **R**unners
 
-Although the acronym is a bit of a stretch, it has a nice ring to it. The real answer is that "Sugar" refers to syntactic sugar, which makes the code more readable and easier to write.
+While the acronym might be a bit of a stretch, it has a nice ring to it. In reality, "Sugar" refers to syntactic sugar, which makes the code more readable and easier to write.
 
 ### Why Run a CLI Program as a Shell?
 
-The answer is to avoid long start-up times when importing heavy modules. In recent years, many researchers use deep learning frameworks like PyTorch and TensorFlow, which often take a second to warm up. For CLI programs, it is better to have a quick response time to provide a better user experience. Using a shell, you only load things once, and the shell will handle exceptions.
+Quick response times are crucial for a good user experience in CLI programs. Running a CLI program as a shell helps avoid repeatedly loading heavy modules, making subsequent commands respond quicker. This is particularly important for researchers using deep learning frameworks like PyTorch and TensorFlow, which can take a second to initialize.
 
-Another approach to avoid long loading times is lazy import. Some projects rely on [`lazy-loader`](https://github.com/scientific-python/lazy-loader) from Scientific-Python, which is also a good choice. Additionally, Sugar has an experimental submodule for lazily importing libraries inside a context manager. See the Experimental section for details.
+Another way to reduce loading times is through lazy imports. Some projects use the [`lazy-loader`](https://github.com/scientific-python/lazy-loader) from Scientific-Python, which is an effective solution. Additionally, Sugar offers an experimental submodule for lazy importing within a context manager. For more details, see the Experimental section.
 
 ### Why Did We Start the Project?
 

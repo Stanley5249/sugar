@@ -176,19 +176,15 @@ Another approach to avoid long loading times is lazy import. Some projects rely 
 
 ### Why Did We Start the Project?
 
-Before starting this project, we read a great site called [Command Line Interface Guidelines](https://clig.dev). It highlighted the chaos of CLI:
+We embarked on this project after being inspired by the [Command Line Interface Guidelines](https://clig.dev), which shed light on the chaotic nature of CLI environments:
 
 > The world of the terminal is a mess. Inconsistencies are everywhere, slowing us down and making us second-guess ourselves.
 
-Existing CLI libraries have many ambiguities that bothered us a lot. For example, in most libraries, `--FLAG 1 2` can be parsed in different ways: either `1` is an option of `FLAG` and `2` is positional, or both `1` and `2` belong to `FLAG`. The behavior depends on how the parser is built or other details. In our humble opinion, it should always be the latter, and positional arguments should always come before flags.
+Existing CLI libraries are riddled with ambiguities that frustrated us. For instance, the command `--FLAG 1 2` can be interpreted in multiple ways: either `1` is an option for `FLAG` and `2` is positional, or both `1` and `2` are options for `FLAG`. This behavior varies based on the parser's design and other factors. We believe it should always be the latter, with positional arguments preceding flags.
 
-The above example is just the tip of the iceberg. It pushed us to write a whole new library. It may not be definitively better than others, as we are still finding better ways to solve these problems. However, we hope a standard can be established and ultimately become the new norm for CLIs.
+This issue is just one example of many that motivated us to develop a new library. While it may not yet be perfect, we are continually seeking better solutions to these problems. Our goal is to establish a standard that enhances productivity and user satisfaction, ultimately becoming the new norm for CLIs.
 
-Also from the section:
-
-> "Abandon a standard when it is demonstrably harmful to productivity or user satisfaction." — Jef Raskin, [The Humane Interface](https://en.wikipedia.org/wiki/The_Humane_Interface)
-
-See [Chaos](https://clig.dev/#chaos) for the original lines.
+As Jef Raskin stated in The Humane Interface, "Abandon a standard when it is demonstrably harmful to productivity or user satisfaction." For more details, see [Chaos](https://clig.dev/#chaos).
 
 ## Contributing
 

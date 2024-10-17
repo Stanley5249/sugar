@@ -1,12 +1,12 @@
 __all__ = [
-    "SugarError",
     "SugarExit",
+    "SugarError",
 ]
 
 
-class SugarExit(SystemExit):
-    """Exception raised when the application exits."""
-
-
 class SugarError(Exception):
-    """Exception raised for errors in the Sugar library."""
+    """Exception raised for user input errors during argument parsing."""
+
+
+class SugarExit(SystemExit):
+    """Exception raised when a `SugarError` is suppressed and the application exits."""

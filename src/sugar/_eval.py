@@ -1,4 +1,5 @@
 from ast import (
+    AST,
     Add,
     BinOp,
     Call,
@@ -15,7 +16,6 @@ from ast import (
     UnaryOp,
     USub,
     dump,
-    expr,
     literal_eval,
 )
 from typing import Any
@@ -23,9 +23,9 @@ from typing import Any
 from sugar._utils import set_name
 
 
-def convert(node: expr) -> Any:
-    node_stack = [(node, True)]
-    value_stack = []
+def convert(node: AST) -> Any:
+    node_stack: list[tuple[AST, bool]] = [(node, True)]
+    value_stack: list[Any] = []
 
     while node_stack:
         node, not_visited = node_stack.pop()
@@ -68,11 +68,13 @@ def convert(node: expr) -> Any:
         elif isinstance(node, Dict):
             if not_visited:
                 node_stack.append((node, False))
-                if None in node.keys:
+                keys = node.keys
+                values = node.values
+                if len(keys) != len(values) or None in keys:
                     break
-                for key in node.keys:
+                for key in keys:
                     node_stack.append((key, True))  # type: ignore
-                for value in node.values:
+                for value in values:
                     node_stack.append((value, True))
             else:
                 items = zip(
@@ -82,9 +84,16 @@ def convert(node: expr) -> Any:
                 value_stack.append(dict(items))
         elif isinstance(node, BinOp):
             if not_visited:
+                left = node.left
+                right = node.right
+                if not (
+                    isinstance(left, (Constant, UnaryOp))
+                    and isinstance(right, (Constant))
+                ):
+                    break
                 node_stack.append((node, False))
-                node_stack.append((node.left, True))
-                node_stack.append((node.right, True))
+                node_stack.append((left, True))
+                node_stack.append((right, True))
             else:
                 real = value_stack.pop()
                 if not isinstance(real, (int, float)):
@@ -101,26 +110,38 @@ def convert(node: expr) -> Any:
                     break
         elif isinstance(node, UnaryOp):
             if not_visited:
+                operand = node.operand
+                if not isinstance(operand, Constant):
+                    break
                 node_stack.append((node, False))
-                node_stack.append((node.operand, True))
+                node_stack.append((operand, True))
             else:
-                operend = value_stack.pop()
-                if not isinstance(operend, (int, float)):
+                operand = value_stack.pop()
+                if isinstance(operand, bool) or not isinstance(
+                    operand, (int, float, complex)
+                ):
                     break
                 op = node.op
                 if isinstance(op, UAdd):
-                    value_stack.append(operend)
+                    value_stack.append(operand)
                 elif isinstance(op, USub):
-                    value_stack.append(-operend)
+                    value_stack.append(-operand)
                 else:
                     break
         else:
             break
     else:
+        assert not node_stack, node_stack
         assert len(value_stack) == 1, value_stack
+
+        # well-formed node
         return value_stack.pop()
 
-    raise ValueError(f"invalid node {dump(node)}")
+    # malformed node
+    lno = getattr(node, "lineno", None)
+    if lno is None:
+        raise ValueError("malformed node or string:")
+    raise ValueError(f"malformed node or string on line {lno}:")
 
 
 def ext_eval(source: str) -> Any:

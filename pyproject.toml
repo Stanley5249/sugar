@@ -15,21 +15,19 @@ classifiers = [
 ]
 requires-python = ">=3.12"
 dynamic = ["version", "description"]
-dependencies = ["docstring_parser"]
+dependencies = ["docstring-parser>=0.16"]
 license = { file = "LICENSE" }
 
 [project.urls]
 Homepage = "https://github.com/Stanley5249/sugar"
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "ruff",
-    "uv",
-    "mkdocs",
-    "mkdocstrings[python]",
-    "mkdocs-material",
-]
-
 [tool.flit.module]
 name = "sugar"
+
+[dependency-groups]
+dev = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.5.36",
+    "mkdocstrings[python]>=0.26.1",
+    "pytest>=8.3.3",
+]
